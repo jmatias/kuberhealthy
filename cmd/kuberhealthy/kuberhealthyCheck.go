@@ -33,7 +33,7 @@ type KuberhealthyCheck interface {
 	// CurrentStatus returns the current status of the check and its
 	// error messages.  The bool indicates health. (true = up and false = down).
 	// This function should not do anything complex and is expected to return
-	// quickly.  It will be invoked on every status page request.
+	// quickly.  It will be invoked on every status page request.w
 	CurrentStatus() (bool, []string)
 	// Run fires off a single check.  It is invoked each time the Interval
 	// ticker ticks.  Results of the error are stored within the check
