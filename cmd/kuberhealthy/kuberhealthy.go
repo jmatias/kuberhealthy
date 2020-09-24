@@ -669,9 +669,11 @@ func (k *Kuberhealthy) runCheck(ctx context.Context, c KuberhealthyCheck) {
 		// waits for all pods to clear before running the check and waits for all pods to exit once the check has finished
 		// running. Both occur before and after the checker pod completes its run.
 		checkRunDuration := time.Now().Sub(checkStartTime) - time.Second*10
+		log.Debugln("kuberhealthy.go - Check duration: ", checkRunDuration)
 
 		// make a new state for this check and fill it from the check's current status
 		checkDetails, err := getCheckState(c)
+		log.Debugln("kuberhealthy.go - checkDetails ", checkDetails)
 		if err != nil {
 			log.Errorln("Error setting check state after run:", c.Name(), "in namespace", c.CheckNamespace()+":", err)
 		}
@@ -680,6 +682,8 @@ func (k *Kuberhealthy) runCheck(ctx context.Context, c KuberhealthyCheck) {
 		details.OK, details.Errors = c.CurrentStatus()
 		details.RunDuration = checkRunDuration.String()
 		details.CurrentUUID = checkDetails.CurrentUUID
+
+		log.Debugln("kuberhealthy.go - details", details)
 
 		// send data to the metric forwarder if configured
 		if k.MetricForwarder != nil {
@@ -690,7 +694,9 @@ func (k *Kuberhealthy) runCheck(ctx context.Context, c KuberhealthyCheck) {
 
 			runDuration, err := time.ParseDuration(details.RunDuration)
 			if err != nil {
-				log.Errorln("Error parsing run duration", err)
+				log.Debugln("kuberhealthy.go - Run duration: ", details.RunDuration)
+				log.Debugln("kuberhealthy.go - Last Run: ", details.LastRun)
+				log.Errorln("kuberhealthy.go - Error parsing run duration", err)
 			}
 
 			tags := map[string]string{

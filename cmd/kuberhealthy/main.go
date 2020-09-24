@@ -114,6 +114,7 @@ func init() {
 	// log to stdout and set the level to info by default
 	log.SetOutput(os.Stdout)
 	log.SetLevel(parsedLogLevel)
+	log.SetFormatter(&log.JSONFormatter{})
 	log.Infoln("Startup Arguments:", os.Args)
 
 	// parse external check URL configuration
