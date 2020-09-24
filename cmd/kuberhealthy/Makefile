@@ -1,5 +1,5 @@
 # IMAGE="jlmatias/kuberhealthy"
-TAG="v2.2.1-1"
+TAG="v2.2.2"
 
 build:
 	docker build -t jlmatias/kuberhealthy:$(TAG) -f Dockerfile ../../

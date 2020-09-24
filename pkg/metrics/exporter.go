@@ -40,7 +40,9 @@ func GenerateMetrics(state health.State) string {
 	metricsOutput += "# TYPE kuberhealthy_check_duration_seconds gauge\n"
 	checkMetricState := map[string]string{}
 	for c, d := range state.CheckDetails {
-		log.Debugln("exporter.go - State and Check details: ", state)
+		//log.Debugln("exporter.go - Run duration: ", d.RunDuration)
+		log.Debugln("exporter.go - CheckDetails: ", d)
+		//log.Debugln("exporter.go - Last Run: ", d.LastRun)
 
 		checkStatus := "0"
 		if d.OK {
@@ -50,6 +52,7 @@ func GenerateMetrics(state health.State) string {
 		if len(d.Errors) > 0 {
 			for _, error := range d.Errors {
 				errors += fmt.Sprintf("%s|", error)
+				log.Errorln(errors)
 			}
 		}
 		metricName := fmt.Sprintf("kuberhealthy_check{check=\"%s\",namespace=\"%s\",status=\"%s\",error=\"%s\"}", c, d.Namespace, checkStatus, errors)
@@ -57,8 +60,6 @@ func GenerateMetrics(state health.State) string {
 		checkMetricState[metricName] = checkStatus
 		runDuration, err := time.ParseDuration(d.RunDuration)
 		if err != nil {
-			log.Debugln("exporter.go - Run duration: ", d.RunDuration)
-			log.Debugln("exporter.go - Last Run: ", d.LastRun)
 			log.Errorln("exporter.go - Error parsing run duration", err)
 		}
 		checkMetricState[metricDurationName] = fmt.Sprintf("%f", runDuration.Seconds())
